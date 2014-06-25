@@ -2,6 +2,7 @@ require "bindeps/version"
 require "unpacker"
 require "which"
 require "tmpdir"
+require "yaml"
 
 module Bindeps
 
@@ -10,12 +11,16 @@ module Bindeps
   class UnsupportedSystemError < StandardError; end
 
   def self.require dependencies
+    if dependencies.is_a? String
+      dependencies = YAML.load_file dependencies
+    end
     Dir.mktmpdir do |tmpdir|
       Dir.chdir(tmpdir) do
-        dependencies.each do |dep|
-          d = Dependency.new(dep[:binaries],
-                             dep[:version],
-                             dep[:url])
+        dependencies.each_pair do |name, config|
+          d = Dependency.new(name,
+                             config[:binaries],
+                             config[:version],
+                             config[:url])
           d.install_missing
         end
       end
@@ -24,7 +29,8 @@ module Bindeps
 
   class Dependency
 
-    def init(binaries, versionconfig, urlconfig)
+    def init(name, binaries, versionconfig, urlconfig)
+      @name = name
       @binaries = binaries
       @version = versionconfig[:number]
       @version_cmd = versionconfig[:command]
@@ -49,11 +55,11 @@ module Bindeps
           return sys[System.arch]
         else
           raise UnsupportedSystemError,
-                "bindeps config doesn't contain an entry for #{System.arch}"
+                "bindeps config for #{@name} doesn't contain an entry for #{System.arch}"
         end
       else
         raise UnsupportedSystemError,
-              "bindeps config doesn't contain an entry for #{System.os}"
+              "bindeps config for #{@name} doesn't contain an entry for #{System.os}"
       end
     end
 
@@ -61,7 +67,7 @@ module Bindeps
       `curl -O -J -L #{@url}`
       unless $?.to_i == 0
         raise DownloadFailedError,
-              "download of #{@url} failed"
+              "download of #{@url} for #{@name} failed"
     end
 
     def unpack
@@ -111,7 +117,8 @@ module Bindeps
         when /solaris|bsd/
           :unix
         else
-          raise UnsupportedSystemError, "unknown os: #{host_os.inspect}"
+          raise UnsupportedSystemError,
+                "can't install #{@name}, unknown os: #{host_os.inspect}"
         end
       )
     end
