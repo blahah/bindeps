@@ -22,21 +22,41 @@ Or install it yourself as:
 
 ## Usage
 
-Create a YAML file describing your dependencies as a dictionary.
+Create a YAML file describing your dependencies as a dictionary. Read the [bindeps YAML format specifications](wiki/bindeps_YAML_format_specifications).
 
 ```yaml
 blastplus:
-  versioncmd: 'blastx -version'
-  version: '2.2.29'
-  64bit:
-    osx: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.29/ncbi-blast-2.2.29+-universal-macosx.tar.gz
-    linux: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.29/ncbi-blast-2.2.29+-x64-linux.tar.gz
+  binaries:
+    - makeblastdb
+    - blastn
+    - tblastn
+    - blastp
+    - blastx
+  version:
+    number: '2.2.29'
+    command: 'blastx -version'
+  url:
+    64bit:
+      osx: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.29/ncbi-blast-2.2.29+-universal-macosx.tar.gz
+      linux: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.29/ncbi-blast-2.2.29+-x64-linux.tar.gz
 bowtie2:
-  versioncmd: 'bowtie2 --version'
-  version: '2.2.3'
-  64bit:
-    linux: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip
-    osx: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-macos-x86_64.zip
+  binaries:
+    - bowtie2
+    - bowtie2-align-l
+    - bowtie2-align-s
+    - bowtie2-build
+    - bowtie2-build-l
+    - bowtie2-build-s
+    - bowtie2-inspect
+    - bowtie2-inspect-l
+    - bowtie2-inspect-s
+  version:
+    number: '2.2.3'
+    command: 'bowtie2 --version'
+  url:
+    64bit:
+      linux: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip
+      osx: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-macos-x86_64.zip
 ```
 
 Then as soon as your app is executed, let `bindeps` check for and install any missing dependencies.
