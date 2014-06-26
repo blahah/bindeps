@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["rds45@cam.ac.uk"]
   spec.description   = %q{binary dependency management for ruby gems}
   spec.summary       = %q{binary dependency management for ruby gems}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/Blahah/bindeps"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

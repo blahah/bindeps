@@ -32,20 +32,21 @@ module Unpacker
 
   def self.unpack(file, tmpdir = "/tmp", &block)
     Dir.mktmpdir 'unpacker' do |dir|
-      case file
-      when /rar$/
-        `unrar x -y #{file} #{dir}`
-      when /(tar|tgz|tar\.gz|tar\.bz|tbz)$/
-        `tar xf #{file} --directory #{dir}`
-      when /zip$/
-        `unzip #{file} -d #{dir}`
-      when /gz$/
-        `gunzip -c #{file} #{File.join(dir, "gz-contents")}`
-      else
-        raise UnrecognizedArchiveError
-      end
-
-      block.call(Dir.new(dir))
+      cmd = case file
+            when /rar$/
+              "unrar x -y #{file} #{dir}"
+            when /(tar|tgz|tar\.gz|tar\.bz|tbz)$/
+              "tar xvf #{file} --directory #{dir}"
+            when /zip$/
+              "unzip #{file} -d #{dir}"
+            when /gz$/
+              "gunzip -c #{file} #{File.join(dir, "gz-contents")}"
+            else
+              raise UnrecognizedArchiveError
+            end
+      puts cmd
+      puts `#{cmd}`
+      block.call Dir.new(dir)
     end
   end
 

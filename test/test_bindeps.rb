@@ -23,7 +23,7 @@ class TestBinDeps < Test::Unit::TestCase
 
     should "identify and install missing dependencies" do
       Bindeps.require @test_yaml
-      assert_equal 'success', `fakebin`
+      assert_equal 'success', `fakebin`.strip
     end
 
   end
