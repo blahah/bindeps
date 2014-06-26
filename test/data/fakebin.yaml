@@ -1,6 +1,6 @@
 fakebin:
   binaries:
-    fakebin
+    - fakebin
   version:
     number: success
     command: fakebin

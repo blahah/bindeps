@@ -1,0 +1,18 @@
+bowtie2:
+  binaries:
+    - bowtie2
+    - bowtie2-align-l
+    - bowtie2-align-s
+    - bowtie2-build
+    - bowtie2-build-l
+    - bowtie2-build-s
+    - bowtie2-inspect
+    - bowtie2-inspect-l
+    - bowtie2-inspect-s
+  version:
+    number: '2.2.3'
+    command: 'bowtie2 --version'
+  url:
+    64bit:
+      linux: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip
+      macosx: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-macos-x86_64.zip
