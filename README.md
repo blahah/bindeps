@@ -74,7 +74,7 @@ require 'bindeps'
 Bindeps.require 'binary_dependencies.yaml'
 ```
 
-`bindeps` will check run the `versioncmd` for each dependency. If the return value of the command doesn't match a regular expression test against the `version` field, `bindeps` will download the file that matches your system architecture, unpack it and place the binary in your path. If the return value does match, `bindeps` will do nothing.
+`bindeps` will check run the `version:command` for each dependency. If the return value of the command doesn't match a regular expression test against the `version:number` field, `bindeps` will download the file that matches your system architecture, unpack it and place the binary in your path. If the return value does match, `bindeps` will do nothing.
 
 ## Contributing
 
