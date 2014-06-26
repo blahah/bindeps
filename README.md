@@ -1,5 +1,12 @@
 # Bindeps
 
+[![Build Status](https://travis-ci.org/Blahah/bindeps.svg)](https://travis-ci.org/Blahah/bindeps)
+[![Dependency Status](http://img.shields.io/gemnasium/Blahah/bindeps.svg)](https://gemnasium.com/Blahah/bindeps)
+[![Coverage Status](http://img.shields.io/coveralls/Blahah/bindeps.svg)](https://coveralls.io/r/Blahah/bindeps)
+[![Code Climate](http://img.shields.io/codeclimate/github/Blahah/bindeps.svg)](https://codeclimate.com/github/Blahah/bindeps)
+[![Gem Version](http://img.shields.io/gem/v/bindeps.svg)](https://rubygems.org/gems/bindeps)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://Blahah.mit-license.org)
+
 Simple binary dependency management for Ruby gems
 
 ## Installation
