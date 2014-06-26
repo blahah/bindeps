@@ -14,3 +14,5 @@ require 'bindeps'
 
 Turn.config.format = :pretty
 Turn.config.trace = 5
+
+require 'yaml'

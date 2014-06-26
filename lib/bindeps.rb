@@ -1,4 +1,5 @@
 require "bindeps/version"
+require "bindeps/unpacker"
 require "unpacker"
 require "which"
 require "tmpdir"
@@ -6,7 +7,6 @@ require "yaml"
 
 module Bindeps
 
-  class UnsupportedArchiveError < StandardError; end
   class DownloadFailedError < StandardError; end
   class UnsupportedSystemError < StandardError; end
 
@@ -90,7 +90,7 @@ module Bindeps
     end
 
     def installed? bin
-      `#{version_cmd}` Which.which bin
+      (`#{version_cmd}` == version) && Which.which(bin)
     end
 
     def install bin
