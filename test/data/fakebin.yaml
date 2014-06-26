@@ -6,10 +6,10 @@ fakebin:
     command: fakebin
   url:
     64bit:
-      macosx: https://github.com/Blahah/bindeps/blob/master/test/data/fakebin.tgz
-      linux: https://github.com/Blahah/bindeps/blob/master/test/data/fakebin.tgz
-      unix: https://github.com/Blahah/bindeps/blob/master/test/data/fakebin.tgz
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
     32bit:
-      macosx: https://github.com/Blahah/bindeps/blob/master/test/data/fakebin.tgz
-      linux: https://github.com/Blahah/bindeps/blob/master/test/data/fakebin.tgz
-      unix: https://github.com/Blahah/bindeps/blob/master/test/data/fakebin.tgz
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
