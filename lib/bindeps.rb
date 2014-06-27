@@ -41,8 +41,8 @@ module Bindeps
 
     def install_missing
       unless all_installed?
-        puts "Binary dependency #{@name} not installed"
-        puts "It will now be downloaded and installed"
+        puts "binary dependency #{@name} not installed"
+        puts "it will now be downloaded and installed"
         download
         unpack
       end
@@ -100,7 +100,7 @@ module Bindeps
       path = Which.which(bin)
       if path
         ret = `#{@version_cmd}`.strip
-        if $?.to_i == 0 && ret.equal?(@version)
+        if ret && (/#{@version}/ =~ ret)
           return path
         end
       end
