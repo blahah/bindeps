@@ -102,7 +102,13 @@ module Bindeps
         ret = `#{@version_cmd}`.strip
         if ret && (/#{@version}/ =~ ret)
           return path
+        else
+          puts "installed version should have been #{@version}"
+          puts "but it was:"
+          puts ret
         end
+      else
+        puts "binary #{bin} is not in the PATH"
       end
       false
     end
