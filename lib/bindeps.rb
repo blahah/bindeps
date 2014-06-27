@@ -67,7 +67,7 @@ module Bindeps
     end
 
     def download
-      `curl --silent -O -J -L #{@url}`
+      `curl -O -J -L #{@url}`
       unless $?.to_i == 0
         raise DownloadFailedError,
               "download of #{@url} for #{@name} failed"
