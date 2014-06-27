@@ -41,11 +41,10 @@ module Bindeps
 
     def install_missing
       unless all_installed?
-        @binaries.each do |bin|
-          download
-          unpack
-          return
-        end
+        puts "Binary dependency #{@name} not installed"
+        puts "It will now be downloaded and installed"
+        download
+        unpack
       end
     end
 
@@ -80,7 +79,7 @@ module Bindeps
         Dir.chdir dir do
           Dir['**/*'].each do |extracted|
             if @binaries.include? File.basename(extracted)
-              install extracted
+              install(extracted) unless File.diretory?(extracted)
             end
           end
         end
@@ -89,7 +88,10 @@ module Bindeps
 
     def all_installed?
       @binaries.each do |bin|
-        return false unless installed? bin
+        unless installed? bin
+          puts "required binary #{bin} is not installed"
+          return false
+        end
       end
       true
     end
