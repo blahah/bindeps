@@ -32,20 +32,6 @@ Or install it yourself as:
 Create a YAML file describing your dependencies as a dictionary. Read the [bindeps YAML format specifications](wiki/bindeps_YAML_format_specifications).
 
 ```yaml
-blastplus:
-  binaries:
-    - makeblastdb
-    - blastn
-    - tblastn
-    - blastp
-    - blastx
-  version:
-    number: '2.2.29'
-    command: 'blastx -version'
-  url:
-    64bit:
-      macosx: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.29/ncbi-blast-2.2.29+-universal-macosx.tar.gz
-      linux: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.29/ncbi-blast-2.2.29+-x64-linux.tar.gz
 bowtie2:
   binaries:
     - bowtie2
@@ -74,7 +60,7 @@ require 'bindeps'
 Bindeps.require 'binary_dependencies.yaml'
 ```
 
-`bindeps` will check run the `versioncmd` for each dependency. If the return value of the command doesn't match a regular expression test against the `version` field, `bindeps` will download the file that matches your system architecture, unpack it and place the binary in your path. If the return value does match, `bindeps` will do nothing.
+`bindeps` will check run the `version:command` for each dependency. If the return value of the command doesn't match a regular expression test against the `version:number` field, `bindeps` will download the file that matches your system architecture, unpack it and place the binary in your path. Specifically, it is added to the `bin` directory of your RubyGems installation. This means the binary will be in the PATH as long as this version of RubyGems is in use (which is ideal for gem dependencies). If the return value does match, `bindeps` will do nothing.
 
 ## Contributing
 
