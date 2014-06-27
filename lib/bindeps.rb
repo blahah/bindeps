@@ -78,8 +78,8 @@ module Bindeps
       archive = File.basename(@url)
       Unpacker.unpack(archive) do |dir|
         Dir.chdir dir do
-          Dir['*'].each do |extracted|
-            if @binaries.include? extracted
+          Dir['**/*'].each do |extracted|
+            if @binaries.include? File.basename(extracted)
               install extracted
             end
           end
