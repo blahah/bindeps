@@ -79,7 +79,7 @@ module Bindeps
         Dir.chdir dir do
           Dir['**/*'].each do |extracted|
             if @binaries.include? File.basename(extracted)
-              install(extracted) unless File.diretory?(extracted)
+              install(extracted) unless File.directory?(extracted)
             end
           end
         end
