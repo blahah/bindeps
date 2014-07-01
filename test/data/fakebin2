@@ -1,0 +1,4 @@
+#! /bin/sh
+echo 'this is a non-matching line'
+echo 'fakebin v2.0.1'
+echo 'more non-matching stuff'

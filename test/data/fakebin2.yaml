@@ -1,0 +1,15 @@
+fakebin:
+  binaries:
+    - fakebin2
+  version:
+    number: 2.0.1
+    command: fakebin2
+  url:
+    64bit:
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin2.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin2.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin2.tgz
+    32bit:
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin2.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin2.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin2.tgz
