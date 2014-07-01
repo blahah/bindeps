@@ -41,6 +41,21 @@ class TestBinDeps < Test::Unit::TestCase
       end
     end
 
+    should "handle version output to stderr" do
+      test_yaml = File.join(@data_dir, 'fakebin3.yaml')
+      # install fakebin3
+      Bindeps.require test_yaml
+      # now Dependency should detect it as installed
+      deps = YAML.load_file test_yaml
+      deps.each_pair do |name, config|
+        d = Bindeps::Dependency.new(name,
+                                    config['binaries'],
+                                    config['version'],
+                                    config['url'])
+        assert d.installed?('fakebin3')
+      end
+    end
+
   end
 
 end

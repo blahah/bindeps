@@ -1,0 +1,15 @@
+fakebin:
+  binaries:
+    - fakebin3
+  version:
+    number: 2.0.1.ERR
+    command: fakebin3
+  url:
+    64bit:
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin3.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin3.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin3.tgz
+    32bit:
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin3.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin3.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin3.tgz

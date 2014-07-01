@@ -99,7 +99,7 @@ module Bindeps
     def installed? bin
       path = Which.which(bin)
       if path
-        ret = `#{@version_cmd}`.split("\n").map{ |l| l.strip }.join('|')
+        ret = `#{@version_cmd} 2>&1`.split("\n").map{ |l| l.strip }.join('|')
         if ret && (/#{@version}/ =~ ret)
           return path
         else

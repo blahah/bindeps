@@ -1,0 +1,5 @@
+#! /bin/sh
+# all output to stderr (some programs show version this way)
+echo 'this is a non-matching line' 1>&2
+echo 'fakebin v2.0.1.ERR' 1>&2
+echo 'more non-matching stuff' 1>&2
