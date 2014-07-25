@@ -25,6 +25,26 @@ module Bindeps
     end
   end
 
+  # Check whether all dependencies are installed. Return an array of missing
+  # dependencies.
+  def self.missing dependencies
+    if dependencies.is_a? String
+      dependencies = YAML.load_file dependencies
+    end
+    tmpdir = Dir.mktmpdir
+    missing = []
+    Dir.chdir(tmpdir) do
+      dependencies.each_pair do |name, config|
+        d = Dependency.new(name,
+                           config['binaries'],
+                           config['version'],
+                           config['url'])
+        missing << name unless d.all_installed?
+      end
+    end
+    missing
+  end
+
   class Dependency
 
     def initialize(name, binaries, versionconfig, urlconfig)

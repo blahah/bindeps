@@ -9,21 +9,17 @@ class TestBinDeps < Test::Unit::TestCase
       @data_dir = File.join(test_dir, 'data')
     end
 
-    # teardown do
-    #
-    # end
-    #
-    # should "check if dependencies are installed" do
-    #
-    # end
-    #
-    # should "download and unpack dependencies" do
-    # end
-
     should "identify and install missing dependencies" do
       test_yaml = File.join(@data_dir, 'fakebin.yaml')
       Bindeps.require test_yaml
       assert_equal 'success', `fakebin`.strip
+    end
+
+    should "identify dependencies that are missing" do
+      test_yaml = File.join(@data_dir, 'neverinstalled.yaml')
+      missing = Bindeps.missing test_yaml
+      assert_equal 1, missing.length
+      assert_equal 'neverinstalled', missing.first
     end
 
     should "handle case where version is not on first line" do
