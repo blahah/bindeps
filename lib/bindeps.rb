@@ -61,8 +61,6 @@ module Bindeps
 
     def install_missing
       unless all_installed?
-        puts "binary dependency #{@name} not installed"
-        puts "it will now be downloaded and installed"
         download
         unpack
       end
@@ -109,7 +107,6 @@ module Bindeps
     def all_installed?
       @binaries.each do |bin|
         unless installed? bin
-          puts "required binary #{bin} is not installed"
           return false
         end
       end
@@ -122,20 +119,13 @@ module Bindeps
         ret = `#{@version_cmd} 2>&1`.split("\n").map{ |l| l.strip }.join('|')
         if ret && (/#{@version}/ =~ ret)
           return path
-        else
-          puts "installed version should have been #{@version}"
-          puts "but it was:"
-          puts ret
         end
-      else
-        puts "binary #{bin} is not in the PATH"
       end
       false
     end
 
     def install bin
       bindir = File.join(ENV['GEM_HOME'], 'bin')
-      puts "installing #{bin} to #{bindir}"
       FileUtils.cp(bin, File.join(bindir, File.basename(bin)))
     end
 
