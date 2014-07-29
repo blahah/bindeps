@@ -9,6 +9,15 @@ class TestBinDeps < Test::Unit::TestCase
       @data_dir = File.join(test_dir, 'data')
     end
 
+    teardown do
+      # delete fake binaries from
+      bindir = File.join(ENV['GEM_HOME'], 'bin')
+      `rm #{bindir}/fakebin` if File.exist?("#{bindir}/fakebin")
+      `rm #{bindir}/fakebin2` if File.exist?("#{bindir}/fakebin2")
+      `rm #{bindir}/fakebin3` if File.exist?("#{bindir}/fakebin3")
+      `rm #{bindir}/fakebin4` if File.exist?("#{bindir}/fakebin4")
+    end
+
     should "identify and install missing dependencies" do
       test_yaml = File.join(@data_dir, 'fakebin.yaml')
       Bindeps.require test_yaml
