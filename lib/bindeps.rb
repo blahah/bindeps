@@ -133,7 +133,8 @@ module Bindeps
 
     def install bin
       bindir = File.join(ENV['GEM_HOME'], 'bin')
-      FileUtils.cp(bin, File.join(bindir, File.basename(bin)))
+      install_location = File.join(bindir, File.basename(bin))
+      FileUtils.install(bin, install_location, :mode => 0775)
     end
 
   end
