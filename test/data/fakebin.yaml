@@ -13,3 +13,4 @@ fakebin:
       macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
       linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
       unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakebin.tgz
+  unpack: true

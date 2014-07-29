@@ -32,7 +32,8 @@ class TestBinDeps < Test::Unit::TestCase
         d = Bindeps::Dependency.new(name,
                                     config['binaries'],
                                     config['version'],
-                                    config['url'])
+                                    config['url'],
+                                    config['unpack'])
         assert d.installed?('fakebin2')
       end
     end
@@ -47,8 +48,23 @@ class TestBinDeps < Test::Unit::TestCase
         d = Bindeps::Dependency.new(name,
                                     config['binaries'],
                                     config['version'],
-                                    config['url'])
+                                    config['url'],
+                                    config['unpack'])
         assert d.installed?('fakebin3')
+      end
+    end
+
+    should "handle binaries that don't need to be unpacked" do
+      test_yaml = File.join(@data_dir, 'fakebin4.yaml')
+      Bindeps.require test_yaml
+      deps = YAML.load_file test_yaml
+      deps.each_pair do |name, config|
+        d = Bindeps::Dependency.new(name,
+                                    config['binaries'],
+                                    config['version'],
+                                    config['url'],
+                                    config['unpack'])
+        assert d.installed?('fakebin4'), "fakebin4 installed"
       end
     end
 
