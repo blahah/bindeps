@@ -19,15 +19,37 @@ module Bindeps
         d = Dependency.new(name,
                            config['binaries'],
                            config['version'],
-                           config['url'])
+                           config['url'],
+                           config['unpack'])
         d.install_missing
       end
     end
   end
 
+  # Check whether all dependencies are installed. Return an array of missing
+  # dependencies.
+  def self.missing dependencies
+    if dependencies.is_a? String
+      dependencies = YAML.load_file dependencies
+    end
+    tmpdir = Dir.mktmpdir
+    missing = []
+    Dir.chdir(tmpdir) do
+      dependencies.each_pair do |name, config|
+        d = Dependency.new(name,
+                           config['binaries'],
+                           config['version'],
+                           config['url'],
+                           config['unpack'])
+        missing << name unless d.all_installed?
+      end
+    end
+    missing
+  end
+
   class Dependency
 
-    def initialize(name, binaries, versionconfig, urlconfig)
+    def initialize(name, binaries, versionconfig, urlconfig, unpack)
       @name = name
       unless binaries.is_a? Array
         raise ArgumentError,
@@ -37,12 +59,11 @@ module Bindeps
       @version = versionconfig['number']
       @version_cmd = versionconfig['command']
       @url = choose_url urlconfig
+      @unpack = unpack
     end
 
     def install_missing
       unless all_installed?
-        puts "binary dependency #{@name} not installed"
-        puts "it will now be downloaded and installed"
         download
         unpack
       end
@@ -75,21 +96,24 @@ module Bindeps
 
     def unpack
       archive = File.basename(@url)
-      Unpacker.unpack(archive) do |dir|
-        Dir.chdir dir do
-          Dir['**/*'].each do |extracted|
-            if @binaries.include? File.basename(extracted)
-              install(extracted) unless File.directory?(extracted)
+      if @unpack
+        Unpacker.unpack(archive) do |dir|
+          Dir.chdir dir do
+            Dir['**/*'].each do |extracted|
+              if @binaries.include? File.basename(extracted)
+                install(extracted) unless File.directory?(extracted)
+              end
             end
           end
         end
+      else
+        install(@binaries.first)
       end
     end
 
     def all_installed?
       @binaries.each do |bin|
         unless installed? bin
-          puts "required binary #{bin} is not installed"
           return false
         end
       end
@@ -102,21 +126,15 @@ module Bindeps
         ret = `#{@version_cmd} 2>&1`.split("\n").map{ |l| l.strip }.join('|')
         if ret && (/#{@version}/ =~ ret)
           return path
-        else
-          puts "installed version should have been #{@version}"
-          puts "but it was:"
-          puts ret
         end
-      else
-        puts "binary #{bin} is not in the PATH"
       end
       false
     end
 
     def install bin
       bindir = File.join(ENV['GEM_HOME'], 'bin')
-      puts "installing #{bin} to #{bindir}"
-      FileUtils.cp(bin, File.join(bindir, File.basename(bin)))
+      install_location = File.join(bindir, File.basename(bin))
+      FileUtils.install(bin, install_location, :mode => 0775)
     end
 
   end
