@@ -23,6 +23,7 @@
 
 require 'fileutils'
 require 'tmpdir'
+require 'open3'
 
 module Unpacker
 
@@ -44,8 +45,10 @@ module Unpacker
             else
               raise UnrecognizedArchiveError
             end
-      puts cmd
-      puts `#{cmd}`
+      stdout, stderr, status = Open3.capture3 cmd
+      if !status.success?
+        raise RuntimeError.new("There was a problem unpacking #{file}\n#{stderr}")
+      end
       block.call Dir.new(dir)
     end
   end

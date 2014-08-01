@@ -19,7 +19,8 @@ module Bindeps
         d = Dependency.new(name,
                            config['binaries'],
                            config['version'],
-                           config['url'])
+                           config['url'],
+                           config['unpack'])
         d.install_missing
       end
     end
@@ -38,7 +39,8 @@ module Bindeps
         d = Dependency.new(name,
                            config['binaries'],
                            config['version'],
-                           config['url'])
+                           config['url'],
+                           config['unpack'])
         missing << name unless d.all_installed?
       end
     end
@@ -47,7 +49,7 @@ module Bindeps
 
   class Dependency
 
-    def initialize(name, binaries, versionconfig, urlconfig)
+    def initialize(name, binaries, versionconfig, urlconfig, unpack)
       @name = name
       unless binaries.is_a? Array
         raise ArgumentError,
@@ -57,6 +59,7 @@ module Bindeps
       @version = versionconfig['number']
       @version_cmd = versionconfig['command']
       @url = choose_url urlconfig
+      @unpack = unpack
     end
 
     def install_missing
@@ -93,14 +96,18 @@ module Bindeps
 
     def unpack
       archive = File.basename(@url)
-      Unpacker.unpack(archive) do |dir|
-        Dir.chdir dir do
-          Dir['**/*'].each do |extracted|
-            if @binaries.include? File.basename(extracted)
-              install(extracted) unless File.directory?(extracted)
+      if @unpack
+        Unpacker.unpack(archive) do |dir|
+          Dir.chdir dir do
+            Dir['**/*'].each do |extracted|
+              if @binaries.include? File.basename(extracted)
+                install(extracted) unless File.directory?(extracted)
+              end
             end
           end
         end
+      else
+        install(@binaries.first)
       end
     end
 
@@ -126,7 +133,8 @@ module Bindeps
 
     def install bin
       bindir = File.join(ENV['GEM_HOME'], 'bin')
-      FileUtils.cp(bin, File.join(bindir, File.basename(bin)))
+      install_location = File.join(bindir, File.basename(bin))
+      FileUtils.install(bin, install_location, :mode => 0775)
     end
 
   end

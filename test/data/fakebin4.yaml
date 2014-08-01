@@ -1,0 +1,16 @@
+fakebin:
+  binaries:
+    - fakebin4
+  version:
+    number: 4.0.1
+    command: fakebin4
+  url:
+    64bit:
+      macosx: https://github.com/cboursnell/bindeps/raw/master/test/data/fakebin4
+      linux: https://github.com/cboursnell/bindeps/raw/master/test/data/fakebin4
+      unix: https://github.com/cboursnell/bindeps/raw/master/test/data/fakebin4
+    32bit:
+      macosx: https://github.com/cboursnell/bindeps/raw/master/test/data/fakebin4
+      linux: https://github.com/cboursnell/bindeps/raw/master/test/data/fakebin4
+      unix: https://github.com/cboursnell/bindeps/raw/master/test/data/fakebin4
+  unpack: false
