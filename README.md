@@ -50,6 +50,7 @@ bowtie2:
     64bit:
       linux: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-linux-x86_64.zip
       macosx: http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.3/bowtie2-2.2.3-macos-x86_64.zip
+  unpack: true
 ```
 
 Then as soon as your app is executed, let `bindeps` check for and install any missing dependencies.
@@ -60,7 +61,7 @@ require 'bindeps'
 Bindeps.require 'binary_dependencies.yaml'
 ```
 
-`bindeps` will check run the `version:command` for each dependency. If the return value of the command doesn't match a regular expression test against the `version:number` field, `bindeps` will download the file that matches your system architecture, unpack it and place the binary in your path. Specifically, it is added to the `bin` directory of your RubyGems installation. This means the binary will be in the PATH as long as this version of RubyGems is in use (which is ideal for gem dependencies). If the return value does match, `bindeps` will do nothing.
+`bindeps` will check run the `version:command` for each dependency. If the return value of the command doesn't match a regular expression test against the `version:number` field, `bindeps` will download the file that matches your system architecture, unpack it unless `unpack` is set to false, and place the binary in your path. Specifically, it is added to the `bin` directory of your RubyGems installation. This means the binary will be in the PATH as long as this version of RubyGems is in use (which is ideal for gem dependencies). If the return value does match, `bindeps` will do nothing.
 
 ## Contributing
 
