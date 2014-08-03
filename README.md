@@ -11,21 +11,29 @@ Simple binary dependency management for Ruby gems
 
 ## Installation
 
-`gem install bindeps`
+```bash
+$ gem install bindeps
+```
 
 ### Using Bundler
 
 Add this line to your application's Gemfile:
 
-    gem 'bindeps'
+```
+gem 'bindeps'
+```
 
 And then execute:
 
-    $ bundle
+```bash
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install bindeps
+```bash
+$ gem install bindeps
+```
 
 ## Usage
 
