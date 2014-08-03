@@ -16,11 +16,12 @@ module Bindeps
     tmpdir = Dir.mktmpdir
     Dir.chdir(tmpdir) do
       dependencies.each_pair do |name, config|
+        unpack = config.key?('unpack') ? config['unpack'] : true;
         d = Dependency.new(name,
                            config['binaries'],
                            config['version'],
                            config['url'],
-                           config['unpack'])
+                           unpack)
         d.install_missing
       end
     end
@@ -36,11 +37,12 @@ module Bindeps
     missing = []
     Dir.chdir(tmpdir) do
       dependencies.each_pair do |name, config|
+        unpack = config.key?('unpack') ? config['unpack'] : true;
         d = Dependency.new(name,
                            config['binaries'],
                            config['version'],
                            config['url'],
-                           config['unpack'])
+                           unpack)
         missing << name unless d.all_installed?
       end
     end
