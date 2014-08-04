@@ -23,13 +23,15 @@
 
 require 'fileutils'
 require 'tmpdir'
+require 'which'
+include Which
 require 'open3'
 
 module Unpacker
 
   class UnrecognizedArchiveError < StandardError; end
 
-  SUPPORTED_FILEEXTS = %w[tar rar zip gz bz tgz bgz tar]
+  SUPPORTED_FILEEXTS = []
 
   def self.unpack(file, tmpdir = "/tmp", &block)
     Dir.mktmpdir 'unpacker' do |dir|
@@ -53,8 +55,41 @@ module Unpacker
     end
   end
 
+  # %w[tar rar zip gz bz tgz bgz tar]
   def self.archive?(file_name)
-    SUPPORTED_FILEEXTS.include? File.extname(file_name).sub('.', '')
+    ext = File.extname(file_name).sub('.', '')
+    if !which('unrar').empty?
+      SUPPORTED_FILEEXTS << "rar"
+    end
+    if !which('tar').empty?
+      %w[tar tgz tgz tar.gz tar.bz tbz].each do |ext|
+        SUPPORTED_FILEEXTS << ext
+      end
+    end
+    if !which('unzip').empty?
+      SUPPORTED_FILEEXTS << "zip"
+    end
+    if !which('gunzip').empty? << "gz"
+      SUPPORTED_FILEEXTS << "gz"
+    end
+    support = SUPPORTED_FILEEXTS.include? ext
+    if !support
+      help = case ext
+      when /rar/
+        "Please install unrar"
+      when /(tar|tgz|tar\.gz|tar\.bz|tbz)$/
+        "Please install tar"
+      when /zip$/
+        "Please install unzip"
+      when /gz$/
+        "Please install gunzip"
+      else
+        raise UnrecognizedArchiveError
+      end
+      msg = "Archive type not supported: #{ext}\n#{help}"
+      raise UnrecognizedArchiveError.new(msg)
+    end
+    support
   end
 
   def self.valid?(file_path, file_name = file_path)
@@ -70,10 +105,12 @@ module Unpacker
           else
             raise UnrecognizedArchiveError
           end
-    `#{cmd}`
-    true
-  rescue
-    false
+    stdout, stderr, status = Open3.capture3 cmd
+    if status.success?
+      true
+    else
+      false
+    end
   end
 
 end # module Unpacker

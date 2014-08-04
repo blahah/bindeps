@@ -98,6 +98,7 @@ module Bindeps
 
     def unpack
       archive = File.basename(@url)
+      Unpacker.archive? archive
       if @unpack
         Unpacker.unpack(archive) do |dir|
           Dir.chdir dir do
