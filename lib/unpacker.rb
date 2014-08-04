@@ -31,8 +31,6 @@ module Unpacker
 
   class UnrecognizedArchiveError < StandardError; end
 
-  SUPPORTED_FILEEXTS = []
-
   def self.unpack(file, tmpdir = "/tmp", &block)
     Dir.mktmpdir 'unpacker' do |dir|
       cmd = case file
@@ -57,22 +55,23 @@ module Unpacker
 
   # %w[tar rar zip gz bz tgz bgz tar]
   def self.archive?(file_name)
+    supported = []
     ext = File.extname(file_name).sub('.', '')
     if !which('unrar').empty?
-      SUPPORTED_FILEEXTS << "rar"
+      supported << "rar"
     end
     if !which('tar').empty?
       %w[tar tgz tgz tar.gz tar.bz tbz].each do |ext|
-        SUPPORTED_FILEEXTS << ext
+        supported << ext
       end
     end
     if !which('unzip').empty?
-      SUPPORTED_FILEEXTS << "zip"
+      supported << "zip"
     end
-    if !which('gunzip').empty? << "gz"
-      SUPPORTED_FILEEXTS << "gz"
+    if !which('gunzip').empty?
+      supported << "gz"
     end
-    support = SUPPORTED_FILEEXTS.include? ext
+    support = supported.include? ext
     if !support
       help = case ext
       when /rar/

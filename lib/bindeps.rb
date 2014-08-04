@@ -89,8 +89,20 @@ module Bindeps
     end
 
     def download
-      `curl -O -J -L #{@url}`
-      unless $?.to_i == 0
+      curl = which('curl').first
+      wget = which('wget').first
+      if curl
+        cmd = "#{curl} -O -J -L #{@url}"
+        stdout, stderr, status = Open3.capture3 cmd
+      elsif wget
+        cmd = "#{wget} #{@url}"
+        stdout, stderr, status = Open3.capture3 cmd
+      else
+        msg = "You don't have curl or wget?! What kind of computer is "
+        msg << "this?! Windows?! BeOS? OS/2?"
+        raise DownloadFailedError.new(msg)
+      end
+      if !status.success?
         raise DownloadFailedError,
               "download of #{@url} for #{@name} failed"
       end
