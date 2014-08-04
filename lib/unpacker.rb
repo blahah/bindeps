@@ -57,6 +57,7 @@ module Unpacker
   def self.archive?(file_name)
     supported = []
     ext = File.extname(file_name).sub('.', '')
+    return true if ext==""
     if !which('unrar').empty?
       supported << "rar"
     end
