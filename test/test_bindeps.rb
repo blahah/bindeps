@@ -1,6 +1,6 @@
 require 'helper'
 
-class TestBineps < Test::Unit::TestCase
+class TestBindeps < Test::Unit::TestCase
 
   context "bindeps" do
 
@@ -65,11 +65,70 @@ class TestBineps < Test::Unit::TestCase
     end
 
     should "fail when no download is specified for the local system" do
-
+      require 'rbconfig'
+      original_os = RbConfig::CONFIG['host_os']
+      RbConfig::CONFIG['host_os'] = 'fail'
+      assert_raise Bindeps::UnsupportedSystemError do
+        Bindeps::System.os
+      end
+      urlconfig = { '64bit' => { 'unix' => 'url' } }
+      versionconfig = { 'number' => 1, 'command' => 'getversion' }
+      RbConfig::CONFIG['host_os'] = 'linux'
+      assert_raise Bindeps::UnsupportedSystemError do
+        Bindeps::Dependency.new('test', ['binary'],
+                                versionconfig, urlconfig, false)
+      end
+      RbConfig::CONFIG['host_os'] = 'solaris'
+      original_cpu = Gem::Platform.local.cpu
+      Gem::Platform.local.cpu = 'fail'
+      assert_raise Bindeps::UnsupportedSystemError do
+        Bindeps::Dependency.new('test', ['binary'],
+                                versionconfig, urlconfig, false)
+      end
+      # set os info back to the truth
+      RbConfig::CONFIG['host_os'] = original_os
+      Gem::Platform.local.cpu = original_cpu
     end
 
     should "fallback to wget when curl is not available" do
+      # set up fake OS
+      original_os = RbConfig::CONFIG['host_os']
+      RbConfig::CONFIG['host_os'] = 'solaris'
+      original_cpu = Gem::Platform.local.cpu
+      Gem::Platform.local.cpu = 'x86_64'
+      # create config
+      urlconfig = { '64bit' => { 'unix' => 'url' } }
+      versionconfig = { 'number' => 1, 'command' => 'getversion' }
 
+      # with only wget in the path
+      original_path = ENV['PATH']
+      ENV['PATH'] = File.expand_path(@data_dir)
+      assert_nothing_raised Bindeps::DownloadFailedError do
+        dep = Bindeps::Dependency.new('test', ['binary'],
+                                      versionconfig, urlconfig, false)
+        dep.download
+      end
+
+      # with neither curl nor wget
+      ENV['PATH'] = ""
+      assert_raise Bindeps::DownloadFailedError do
+        dep = Bindeps::Dependency.new('test', ['binary'],
+                                      versionconfig, urlconfig, false)
+        dep.download
+      end
+
+      # restore path
+      ENV['PATH'] = original_path
+      # when download doesn't actually work
+      assert_raise Bindeps::DownloadFailedError do
+        dep = Bindeps::Dependency.new('test', ['binary'],
+                                      versionconfig, urlconfig, false)
+        dep.download
+      end
+
+      # restore real OS
+      RbConfig::CONFIG['host_os'] = original_os
+      Gem::Platform.local.cpu = original_cpu
     end
 
     should "fail when no downloader is available" do
@@ -96,7 +155,7 @@ class TestBineps < Test::Unit::TestCase
           false                       # unpack
         )
       end
-      assert_raise do
+      assert_raise ArgumentError do
         Bindeps::Dependency.new(
           'test',                     # name
           'binary',                   # binaries is no longer an array
