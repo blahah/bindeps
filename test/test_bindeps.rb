@@ -9,6 +9,15 @@ class TestBineps < Test::Unit::TestCase
       @data_dir = File.join(test_dir, 'data')
     end
 
+    teardown do
+      # delete fake binaries from
+      bindir = File.join(ENV['GEM_HOME'], 'bin')
+      `rm #{bindir}/fakebin` if File.exist?("#{bindir}/fakebin")
+      `rm #{bindir}/fakebin2` if File.exist?("#{bindir}/fakebin2")
+      `rm #{bindir}/fakebin3` if File.exist?("#{bindir}/fakebin3")
+      `rm #{bindir}/fakebin4` if File.exist?("#{bindir}/fakebin4")
+    end
+
     should "identify and install missing dependencies" do
       test_yaml = File.join(@data_dir, 'fakebin.yaml')
       Bindeps.require test_yaml
@@ -32,7 +41,8 @@ class TestBineps < Test::Unit::TestCase
         d = Bindeps::Dependency.new(name,
                                     config['binaries'],
                                     config['version'],
-                                    config['url'])
+                                    config['url'],
+                                    config['unpack'])
         assert d.installed?('fakebin2')
       end
     end
@@ -47,7 +57,8 @@ class TestBineps < Test::Unit::TestCase
         d = Bindeps::Dependency.new(name,
                                     config['binaries'],
                                     config['version'],
-                                    config['url'])
+                                    config['url'],
+                                    config['unpack'])
         assert d.installed?('fakebin3')
         assert d.all_installed?
       end
@@ -103,6 +114,20 @@ class TestBineps < Test::Unit::TestCase
           },
           false                       # unpack
         )
+      end
+    end
+
+    should "handle binaries that don't need to be unpacked" do
+      test_yaml = File.join(@data_dir, 'fakebin4.yaml')
+      Bindeps.require test_yaml
+      deps = YAML.load_file test_yaml
+      deps.each_pair do |name, config|
+        d = Bindeps::Dependency.new(name,
+                                    config['binaries'],
+                                    config['version'],
+                                    config['url'],
+                                    config['unpack'])
+        assert d.installed?('fakebin4'), "fakebin4 installed"
       end
     end
 
