@@ -59,12 +59,7 @@ module Unpacker
 
   def self.archive?(file_name)
     supported = []
-    ext=""
-    2.times do
-      ext = "#{File.extname(file_name)}#{ext}"
-      file_name = File.basename(file_name, File.extname(file_name))
-    end
-    ext = ext.sub('.', '')
+    ext = File.extname(file_name).sub('.', '')
     return true if ext==""
     if !which('unrar').empty?
       supported << "rar"
@@ -85,7 +80,7 @@ module Unpacker
     end
     support = supported.include? ext
     if !support
-      help = case ext
+      help = case file_name
       when /rar$/
         "Please install unrar"
       when /(tar|tgz|tar\.gz|tar\.bz|tbz|tar\.bz2)$/
