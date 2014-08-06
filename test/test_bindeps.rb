@@ -1,6 +1,6 @@
 require 'helper'
 
-class TestBinDeps < Test::Unit::TestCase
+class TestBineps < Test::Unit::TestCase
 
   context "bindeps" do
 
@@ -49,6 +49,60 @@ class TestBinDeps < Test::Unit::TestCase
                                     config['version'],
                                     config['url'])
         assert d.installed?('fakebin3')
+        assert d.all_installed?
+      end
+    end
+
+    should "fail when no download is specified for the local system" do
+
+    end
+
+    should "fallback to wget when curl is not available" do
+
+    end
+
+    should "fail when no downloader is available" do
+
+    end
+
+    should "initialize" do
+      assert_nothing_raised do
+        Bindeps::Dependency.new(
+          'test',                     # name
+          ['binary'],                 # binaries
+          {                           # versionconfig
+            'number' => 1,
+            'command' => 'getversion'
+          },
+          {                           # urlconfig
+            '64bit' => {
+              'linux' => 'url',
+              'unix' => 'url',
+              'macosx' => 'url',
+              'windows' => 'url',
+            }
+          },
+          false                       # unpack
+        )
+      end
+      assert_raise do
+        Bindeps::Dependency.new(
+          'test',                     # name
+          'binary',                   # binaries is no longer an array
+          {                           # versionconfig
+            'number' => 1,
+            'command' => 'getversion'
+          },
+          {                           # urlconfig
+            '64bit' => {
+              'linux' => 'url',
+              'unix' => 'url',
+              'macosx' => 'url',
+              'windows' => 'url',
+            }
+          },
+          false                       # unpack
+        )
       end
     end
 
