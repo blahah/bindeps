@@ -36,7 +36,7 @@ module Unpacker
       cmd = case file
             when /rar$/
               "unrar x -y #{file} #{dir}"
-            when /(tar|tgz|tar\.gz|tar\.bz|tbz)$/
+            when /(tar|tgz|tar\.gz|tar\.bz|tbz|bz2|tar\.bz2)$/
               "tar xvf #{file} --directory #{dir}"
             when /zip$/
               "unzip #{file} -d #{dir}"
@@ -53,7 +53,6 @@ module Unpacker
     end
   end
 
-  # %w[tar rar zip gz bz tgz bgz tar]
   def self.archive?(file_name)
     supported = []
     ext = File.extname(file_name).sub('.', '')
@@ -62,7 +61,7 @@ module Unpacker
       supported << "rar"
     end
     if !which('tar').empty?
-      %w[tar tgz tgz tar.gz tar.bz tbz].each do |ext|
+      %w[tar tgz tgz tar.gz tar.bz bz2 tar.bz2 tbz].each do |ext|
         supported << ext
       end
     end
@@ -77,7 +76,7 @@ module Unpacker
       help = case ext
       when /rar/
         "Please install unrar"
-      when /(tar|tgz|tar\.gz|tar\.bz|tbz)$/
+      when /(tar|tgz|tar\.gz|tar\.bz|tbz|bz2|tar\.bz2)$/
         "Please install tar"
       when /zip$/
         "Please install unzip"
