@@ -64,6 +64,7 @@ module Unpacker
       ext = "#{File.extname(file_name)}#{ext}"
       file_name = File.basename(file_name, File.extname(file_name))
     end
+    ext = ext.sub('.', '')
     return true if ext==""
     if !which('unrar').empty?
       supported << "rar"
