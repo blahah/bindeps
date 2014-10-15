@@ -36,12 +36,16 @@ module Unpacker
       cmd = case file
             when /rar$/
               "unrar x -y #{file} #{dir}"
-            when /(tar|tgz|tar\.gz|tar\.bz|tbz|bz2|tar\.bz2)$/
-              "tar xvf #{file} --directory #{dir}"
+            when /(tar|tgz|tar\.gz)$/
+              "tar xzf #{file} --directory #{dir}"
+            when /(tar\.bz|tbz|tar\.bz2)$/
+              "tar xjf #{file} --directory #{dir}"
             when /zip$/
               "unzip #{file} -d #{dir}"
             when /gz$/
-              "gunzip -c #{file} #{File.join(dir, "gz-contents")}"
+              "gunzip #{file}"
+            when /bz2$/
+              "bunzip #{file}"
             else
               raise UnrecognizedArchiveError
             end
@@ -61,7 +65,7 @@ module Unpacker
       supported << "rar"
     end
     if !which('tar').empty?
-      %w[tar tgz tgz tar.gz tar.bz bz2 tar.bz2 tbz].each do |ext|
+      %w[tar tgz tgz tar.gz tar.bz tar.bz2 tbz].each do |ext|
         supported << ext
       end
     end
@@ -71,17 +75,22 @@ module Unpacker
     if !which('gunzip').empty?
       supported << "gz"
     end
+    if !which('bunzip2').empty?
+      supported << "bz2"
+    end
     support = supported.include? ext
     if !support
-      help = case ext
-      when /rar/
+      help = case file_name
+      when /rar$/
         "Please install unrar"
-      when /(tar|tgz|tar\.gz|tar\.bz|tbz|bz2|tar\.bz2)$/
+      when /(tar|tgz|tar\.gz|tar\.bz|tbz|tar\.bz2)$/
         "Please install tar"
       when /zip$/
         "Please install unzip"
       when /gz$/
         "Please install gunzip"
+      when /bz2$/
+        "Please install bunzip2"
       else
         raise UnrecognizedArchiveError
       end
@@ -101,6 +110,8 @@ module Unpacker
             "zip -T #{file_path}"
           when /gz|tgz$/
             "gunzip -t #{file_path}"
+          when /bz2$/
+            "bunzip2 -t #{file_path}"
           else
             raise UnrecognizedArchiveError
           end

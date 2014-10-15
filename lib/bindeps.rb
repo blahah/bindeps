@@ -66,6 +66,7 @@ module Bindeps
 
     def install_missing
       unless all_installed?
+        puts "Installing #{@name}..."
         download
         unpack
       end
