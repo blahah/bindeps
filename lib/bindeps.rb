@@ -105,7 +105,7 @@ module Bindeps
       end
       if !status.success?
         raise DownloadFailedError,
-              "download of #{@url} for #{@name} failed"
+              "download of #{@url} for #{@name} failed:\n#{stdout}\n#{stderr}"
       end
     end
 
