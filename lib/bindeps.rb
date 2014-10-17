@@ -43,13 +43,15 @@ module Bindeps
                            config['version'],
                            config['url'],
                            unpack)
-        missing << name unless d.all_installed?
+        missing << d unless d.all_installed?
       end
     end
     missing
   end
 
   class Dependency
+
+    attr_reader :name, :version
 
     def initialize(name, binaries, versionconfig, urlconfig, unpack)
       @name = name
