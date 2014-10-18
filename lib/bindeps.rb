@@ -51,7 +51,7 @@ module Bindeps
 
   class Dependency
 
-    attr_reader :name, :version
+    attr_reader :name, :version, :binaries
 
     def initialize(name, binaries, versionconfig, urlconfig, unpack)
       @name = name
