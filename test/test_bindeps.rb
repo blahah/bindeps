@@ -28,7 +28,7 @@ class TestBindeps < Test::Unit::TestCase
       test_yaml = File.join(@data_dir, 'neverinstalled.yaml')
       missing = Bindeps.missing test_yaml
       assert_equal 1, missing.length
-      assert_equal 'neverinstalled', missing.first
+      assert_equal 'neverinstalled', missing.first.binaries.first
     end
 
     should "handle case where version is not on first line" do
