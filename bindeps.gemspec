@@ -6,7 +6,7 @@ require 'bindeps/version'
 Gem::Specification.new do |spec|
   spec.name          = "bindeps"
   spec.version       = Bindeps::VERSION
-  spec.authors       = ["Richard Smith-Unna"]
+  spec.authors       = ["Richard Smith-Unna", "Chris Boursnell"]
   spec.email         = ["rds45@cam.ac.uk"]
   spec.description   = %q{binary dependency management for ruby gems}
   spec.summary       = %q{binary dependency management for ruby gems}
