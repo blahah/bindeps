@@ -1,6 +1,6 @@
 require "bindeps/version"
 require "unpacker"
-require "which_works"
+require "fixwhich"
 require "tmpdir"
 require "yaml"
 
@@ -52,6 +52,8 @@ module Bindeps
   class Dependency
 
     attr_reader :name, :version, :binaries
+
+    include Which
 
     def initialize(name, binaries, versionconfig, urlconfig, unpack)
       @name = name
@@ -139,7 +141,7 @@ module Bindeps
     end
 
     def installed? bin
-      path = Which.which(bin)
+      path = which(bin)
       if path
         ret = `#{@version_cmd} 2>&1`.split("\n").map{ |l| l.strip }.join('|')
         if ret && (/#{@version}/ =~ ret)

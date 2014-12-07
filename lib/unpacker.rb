@@ -23,9 +23,9 @@
 
 require 'fileutils'
 require 'tmpdir'
-require 'which'
-include Which
+require 'fixwhich'
 require 'open3'
+include Which
 
 module Unpacker
 
