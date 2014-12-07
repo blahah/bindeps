@@ -90,51 +90,6 @@ class TestBindeps < Test::Unit::TestCase
       Gem::Platform.local.cpu = original_cpu
     end
 
-    should "fallback to wget when curl is not available" do
-      # set up fake OS
-      original_os = RbConfig::CONFIG['host_os']
-      RbConfig::CONFIG['host_os'] = 'solaris'
-      original_cpu = Gem::Platform.local.cpu
-      Gem::Platform.local.cpu = 'x86_64'
-      # create config
-      urlconfig = { '64bit' => { 'unix' => 'url' } }
-      versionconfig = { 'number' => 1, 'command' => 'getversion' }
-
-      # with only wget in the path
-      original_path = ENV['PATH']
-      ENV['PATH'] = File.expand_path(@data_dir)
-      assert_nothing_raised Bindeps::DownloadFailedError do
-        dep = Bindeps::Dependency.new('test', ['binary'],
-                                      versionconfig, urlconfig, false)
-        dep.download
-      end
-
-      # with neither curl nor wget
-      ENV['PATH'] = ""
-      assert_raise Bindeps::DownloadFailedError do
-        dep = Bindeps::Dependency.new('test', ['binary'],
-                                      versionconfig, urlconfig, false)
-        dep.download
-      end
-
-      # restore path
-      ENV['PATH'] = original_path
-      # when download doesn't actually work
-      assert_raise Bindeps::DownloadFailedError do
-        dep = Bindeps::Dependency.new('test', ['binary'],
-                                      versionconfig, urlconfig, false)
-        dep.download
-      end
-
-      # restore real OS
-      RbConfig::CONFIG['host_os'] = original_os
-      Gem::Platform.local.cpu = original_cpu
-    end
-
-    should "fail when no downloader is available" do
-
-    end
-
     should "initialize" do
       assert_nothing_raised do
         Bindeps::Dependency.new(

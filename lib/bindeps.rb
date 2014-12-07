@@ -3,6 +3,7 @@ require "unpacker"
 require "fixwhich"
 require "tmpdir"
 require "yaml"
+require "downloadr"
 
 module Bindeps
 
@@ -94,23 +95,7 @@ module Bindeps
     end
 
     def download
-      curl = which('curl').first
-      wget = which('wget').first
-      if curl
-        cmd = "#{curl} -O -J -L #{@url}"
-        stdout, stderr, status = Open3.capture3 cmd
-      elsif wget
-        cmd = "#{wget} #{@url}"
-        stdout, stderr, status = Open3.capture3 cmd
-      else
-        msg = "You don't have curl or wget?! What kind of computer is "
-        msg << "this?! Windows?! BeOS? OS/2?"
-        raise DownloadFailedError.new(msg)
-      end
-      if !status.success?
-        raise DownloadFailedError,
-              "download of #{@url} for #{@name} failed:\n#{stdout}\n#{stderr}"
-      end
+      Downloadr::HTTP.download @url
     end
 
     def unpack
