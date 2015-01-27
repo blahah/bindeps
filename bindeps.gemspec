@@ -6,7 +6,7 @@ require 'bindeps/version'
 Gem::Specification.new do |spec|
   spec.name          = "bindeps"
   spec.version       = Bindeps::VERSION
-  spec.authors       = ["Richard Smith-Unna"]
+  spec.authors       = ["Richard Smith-Unna", "Chris Boursnell"]
   spec.email         = ["rds45@cam.ac.uk"]
   spec.description   = %q{binary dependency management for ruby gems}
   spec.summary       = %q{binary dependency management for ruby gems}
@@ -18,8 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'which', '~> 0.0', '>= 0.0.2'
-  spec.add_dependency "which_works"
+  spec.add_dependency 'fixwhich', '~> 1.0', '>= 1.0.2'
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency 'rake', '~> 10.3', '>= 10.3.2'

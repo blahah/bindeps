@@ -1,6 +1,6 @@
 require "bindeps/version"
 require "unpacker"
-require "which_works"
+require "fixwhich"
 require "tmpdir"
 require "yaml"
 
@@ -51,7 +51,9 @@ module Bindeps
 
   class Dependency
 
-    attr_reader :name, :version
+    attr_reader :name, :version, :binaries
+
+    include Which
 
     def initialize(name, binaries, versionconfig, urlconfig, unpack)
       @name = name
@@ -92,13 +94,13 @@ module Bindeps
     end
 
     def download
-      curl = which('curl').first
       wget = which('wget').first
-      if curl
-        cmd = "#{curl} -O -J -L #{@url}"
-        stdout, stderr, status = Open3.capture3 cmd
-      elsif wget
+      curl = which('curl').first
+      if wget
         cmd = "#{wget} #{@url}"
+        stdout, stderr, status = Open3.capture3 cmd
+      elsif curl
+        cmd = "#{curl} -O -J -L #{@url}"
         stdout, stderr, status = Open3.capture3 cmd
       else
         msg = "You don't have curl or wget?! What kind of computer is "
@@ -107,7 +109,7 @@ module Bindeps
       end
       if !status.success?
         raise DownloadFailedError,
-              "download of #{@url} for #{@name} failed"
+              "download of #{@url} for #{@name} failed:\n#{stdout}\n#{stderr}"
       end
     end
 
@@ -139,7 +141,7 @@ module Bindeps
     end
 
     def installed? bin
-      path = Which.which(bin)
+      path = which(bin)
       if path
         ret = `#{@version_cmd} 2>&1`.split("\n").map{ |l| l.strip }.join('|')
         if ret && (/#{@version}/ =~ ret)
