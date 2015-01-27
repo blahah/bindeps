@@ -13,16 +13,17 @@ module Bindeps
     if dependencies.is_a? String
       dependencies = YAML.load_file dependencies
     end
-    tmpdir = Dir.mktmpdir
-    Dir.chdir(tmpdir) do
-      dependencies.each_pair do |name, config|
-        unpack = config.key?('unpack') ? config['unpack'] : true;
-        d = Dependency.new(name,
-                           config['binaries'],
-                           config['version'],
-                           config['url'],
-                           unpack)
-        d.install_missing
+    Dir.mktmpdir do |tmpdir|
+      Dir.chdir(tmpdir) do
+        dependencies.each_pair do |name, config|
+          unpack = config.key?('unpack') ? config['unpack'] : true;
+          d = Dependency.new(name,
+                             config['binaries'],
+                             config['version'],
+                             config['url'],
+                             unpack)
+          d.install_missing
+        end
       end
     end
   end
@@ -33,17 +34,18 @@ module Bindeps
     if dependencies.is_a? String
       dependencies = YAML.load_file dependencies
     end
-    tmpdir = Dir.mktmpdir
     missing = []
-    Dir.chdir(tmpdir) do
-      dependencies.each_pair do |name, config|
-        unpack = config.key?('unpack') ? config['unpack'] : true;
-        d = Dependency.new(name,
-                           config['binaries'],
-                           config['version'],
-                           config['url'],
-                           unpack)
-        missing << d unless d.all_installed?
+    Dir.mktmpdir do |tmpdir|
+      Dir.chdir(tmpdir) do
+        dependencies.each_pair do |name, config|
+          unpack = config.key?('unpack') ? config['unpack'] : true;
+          d = Dependency.new(name,
+                             config['binaries'],
+                             config['version'],
+                             config['url'],
+                             unpack)
+          missing << d unless d.all_installed?
+        end
       end
     end
     missing
