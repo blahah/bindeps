@@ -144,9 +144,15 @@ module Bindeps
 
     def installed? bin
       path = which(bin)
-      if path
+      if path.length > 0
         ret = `#{@version_cmd} 2>&1`.split("\n").map{ |l| l.strip }.join('|')
         if ret && (/#{@version}/ =~ ret)
+          return path
+        end
+      else
+        if Dir.exist?("#{ENV['HOME']}/.local/bin")
+          ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local/bin"
+          path = which(bin)
           return path
         end
       end
@@ -154,7 +160,19 @@ module Bindeps
     end
 
     def install bin
-      bindir = File.join(ENV['GEM_HOME'], 'bin')
+      gem_home = ENV['GEM_HOME']
+      home = ENV['HOME']
+      bindir = "#{home}/.local/bin"
+      if gem_home.nil?
+        if !Dir.exist?("#{home}/.local")
+          Dir.mkdir("#{home}/.local")
+        end
+        if !Dir.exist?("#{home}/.local/bin")
+          Dir.mkdir("#{home}/.local/bin")
+        end
+      else
+        bindir = File.join(ENV['GEM_HOME'], 'bin')
+      end
       install_location = File.join(bindir, File.basename(bin))
       FileUtils.install(bin, install_location, :mode => 0775)
     end
