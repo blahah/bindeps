@@ -153,7 +153,9 @@ module Bindeps
         if Dir.exist?("#{ENV['HOME']}/.local/bin")
           ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local/bin"
           path = which(bin)
-          return path
+          if path.length > 0
+            return path
+          end
         end
       end
       false
@@ -170,6 +172,7 @@ module Bindeps
         if !Dir.exist?("#{home}/.local/bin")
           Dir.mkdir("#{home}/.local/bin")
         end
+        ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local/bin"
       else
         bindir = File.join(ENV['GEM_HOME'], 'bin')
       end
