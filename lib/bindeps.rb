@@ -175,7 +175,7 @@ module Bindeps
     def install(src, destprefix)
       gem_home = ENV['GEM_HOME']
       home = ENV['HOME']
-      basedir = "#{home}/.local/"
+      basedir = File.join(home, '.local')
       if gem_home.nil?
         ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local"
       else
