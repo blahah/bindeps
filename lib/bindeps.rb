@@ -177,12 +177,12 @@ module Bindeps
       home = ENV['HOME']
       basedir = "#{home}/.local/"
       if gem_home.nil?
-        FileUtils.mkdir_p File.join(basedir, 'bin')
-        FileUtils.mkdir_p File.join(basedir, 'lib')
         ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local"
       else
         basedir = ENV['GEM_HOME']
       end
+      FileUtils.mkdir_p File.join(basedir, 'bin')
+      FileUtils.mkdir_p File.join(basedir, 'lib')
       destprefix = 'bin' if destprefix == '.'
       install_location = File.join(basedir, destprefix, File.basename(src))
       FileUtils.install(src, install_location, :mode => 0775)
