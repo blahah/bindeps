@@ -58,26 +58,9 @@ module Unpacker
   end
 
   def self.archive?(file_name)
-    supported = []
+    supported = supported_archives
     ext = File.extname(file_name).sub('.', '')
     return true if ext==""
-    if !which('unrar').empty?
-      supported << "rar"
-    end
-    if !which('tar').empty?
-      %w[tar tgz tgz tar.gz tar.bz tar.bz2 tbz].each do |ext|
-        supported << ext
-      end
-    end
-    if !which('unzip').empty?
-      supported << "zip"
-    end
-    if !which('gunzip').empty?
-      supported << "gz"
-    end
-    if !which('bunzip2').empty?
-      supported << "bz2"
-    end
     support = supported.include? ext
     if !support
       help = case file_name
@@ -120,6 +103,26 @@ module Unpacker
       true
     else
       false
+    end
+  end
+
+  def supported_archives
+    if !which('unrar').empty?
+      supported << "rar"
+    end
+    if !which('tar').empty?
+      %w[tar tgz tgz tar.gz tar.bz tar.bz2 tbz].each do |ext|
+        supported << ext
+      end
+    end
+    if !which('unzip').empty?
+      supported << "zip"
+    end
+    if !which('gunzip').empty?
+      supported << "gz"
+    end
+    if !which('bunzip2').empty?
+      supported << "bz2"
     end
   end
 
