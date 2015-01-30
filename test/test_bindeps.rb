@@ -11,11 +11,16 @@ class TestBindeps < Test::Unit::TestCase
 
     teardown do
       # delete fake binaries from
-      bindir = File.join(ENV['GEM_HOME'], 'bin')
+      if ENV['GEM_HOME'].nil?
+        bindir = "#{ENV['HOME']}/.local/bin"
+      else
+        bindir = File.join(ENV['GEM_HOME'], 'bin')
+      end
       `rm #{bindir}/fakebin` if File.exist?("#{bindir}/fakebin")
       `rm #{bindir}/fakebin2` if File.exist?("#{bindir}/fakebin2")
       `rm #{bindir}/fakebin3` if File.exist?("#{bindir}/fakebin3")
       `rm #{bindir}/fakebin4` if File.exist?("#{bindir}/fakebin4")
+      `rm -rf #{ENV['HOME']}/.local/bin` if Dir.exist?("#{ENV['HOME']}/.local/bin")
     end
 
     should "identify and install missing dependencies" do
@@ -143,6 +148,19 @@ class TestBindeps < Test::Unit::TestCase
                                     config['unpack'])
         assert d.installed?('fakebin4'), "fakebin4 installed"
       end
+    end
+
+    should "install to a local directory if gem_home can't be found" do
+      ENV['GEM_HOME']=nil
+      test_yaml = File.join(@data_dir, 'fakebin.yaml')
+      Bindeps.require test_yaml
+      assert_equal 'success', `fakebin`.strip
+
+      test_yaml = File.join(@data_dir, 'fakebin2.yaml')
+      # install fakebin2
+      Bindeps.require test_yaml
+      msg = "this is a non-matching line\nfakebin v2.0.1\nmore non-matching stuff"
+      assert_equal msg, `fakebin2`.strip
     end
 
   end
