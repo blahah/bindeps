@@ -58,7 +58,7 @@ module Unpacker
   end
 
   def self.archive?(file_name)
-    supported = supported_archives
+    supported = Unpacker.supported_archives
     ext = File.extname(file_name).sub('.', '')
     return true if ext==""
     support = supported.include? ext
@@ -106,7 +106,8 @@ module Unpacker
     end
   end
 
-  def supported_archives
+  def self.supported_archives
+    supported = []
     if !which('unrar').empty?
       supported << "rar"
     end
@@ -124,6 +125,7 @@ module Unpacker
     if !which('bunzip2').empty?
       supported << "bz2"
     end
+    supported
   end
 
 end # module Unpacker
