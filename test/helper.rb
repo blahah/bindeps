@@ -13,7 +13,7 @@ require 'shoulda-context'
 require 'bindeps'
 
 Turn.config.format = :pretty
-Turn.config.trace = 5
+Turn.config.trace = 15
 
 require 'yaml'
 require 'fileutils'
