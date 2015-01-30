@@ -34,8 +34,6 @@ module Unpacker
   def self.unpack(file, tmpdir = "/tmp", &block)
     Dir.mktmpdir 'unpacker' do |dir|
       cmd = case file
-            when /rar$/
-              "unrar x -y #{file} #{dir}"
             when /(tar|tgz|tar\.gz)$/
               "tar xzf #{file} --directory #{dir}"
             when /(tar\.bz|tbz|tar\.bz2)$/
@@ -64,8 +62,6 @@ module Unpacker
     support = supported.include? ext
     if !support
       help = case file_name
-      when /rar$/
-        "Please install unrar"
       when /(tar|tgz|tar\.gz|tar\.bz|tbz|tar\.bz2)$/
         "Please install tar"
       when /zip$/
@@ -85,8 +81,6 @@ module Unpacker
 
   def self.valid?(file_path, file_name = file_path)
     cmd = case file_name
-          when /rar$/
-            "unrar t #{file_path}"
           when /(tar|tar\.bz|tbz)$/
             "tar tf #{file_path}"
           when /zip$/
