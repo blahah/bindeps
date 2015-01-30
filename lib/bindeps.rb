@@ -177,7 +177,7 @@ module Bindeps
       home = ENV['HOME']
       basedir = File.join(home, '.local')
       if gem_home.nil?
-        ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local"
+        ENV['PATH'] = ENV['PATH'] + ":#{File.join(basedir, 'bin')}"
       else
         basedir = ENV['GEM_HOME']
       end

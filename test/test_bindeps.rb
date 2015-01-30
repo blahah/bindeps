@@ -158,7 +158,6 @@ class TestBindeps < Test::Unit::TestCase
       test_yaml = File.join(@data_dir, 'fakebin.yaml')
       Bindeps.require test_yaml
       assert_equal 'success', `fakebin`.strip
-
       test_yaml = File.join(@data_dir, 'fakebin2.yaml')
       # install fakebin2
       Bindeps.require test_yaml
