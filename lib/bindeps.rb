@@ -18,11 +18,13 @@ module Bindeps
       Dir.chdir(tmpdir) do
         dependencies.each_pair do |name, config|
           unpack = config.key?('unpack') ? config['unpack'] : true;
+          libraries = config.key?('libraries') ? config['libraries'] : []
           d = Dependency.new(name,
                              config['binaries'],
                              config['version'],
                              config['url'],
-                             unpack)
+                             unpack,
+                             libraries)
           d.install_missing
         end
       end
@@ -40,11 +42,13 @@ module Bindeps
       Dir.chdir(tmpdir) do
         dependencies.each_pair do |name, config|
           unpack = config.key?('unpack') ? config['unpack'] : true;
+          libraries = config.key?('libraries') ? config['libraries'] : []
           d = Dependency.new(name,
                              config['binaries'],
                              config['version'],
                              config['url'],
-                             unpack)
+                             unpack,
+                             libraries)
           missing << d unless d.all_installed?
         end
       end
@@ -54,17 +58,19 @@ module Bindeps
 
   class Dependency
 
-    attr_reader :name, :version, :binaries
+    attr_reader :name, :version, :binaries, :libraries
 
     include Which
 
-    def initialize(name, binaries, versionconfig, urlconfig, unpack)
+    def initialize(name, binaries, versionconfig, urlconfig,
+                   unpack, libraries=[])
       @name = name
       unless binaries.is_a? Array
         raise ArgumentError,
               "binaries must be an array"
       end
       @binaries = binaries
+      @libraries = libraries
       @version = versionconfig['number']
       @version_cmd = versionconfig['command']
       @url = choose_url urlconfig
@@ -125,14 +131,16 @@ module Bindeps
         Unpacker.unpack(archive) do |dir|
           Dir.chdir dir do
             Dir['**/*'].each do |extracted|
-              if @binaries.include? File.basename(extracted)
-                install(extracted) unless File.directory?(extracted)
+              file = File.basename(extracted)
+              if @binaries.include?(file) || @libraries.include?(file)
+                dir = File.dirname extracted
+                install(extracted, dir) unless File.directory?(extracted)
               end
             end
           end
         end
       else
-        install(@binaries.first)
+        install(@binaries.first, 'bin')
       end
     end
 
@@ -164,18 +172,20 @@ module Bindeps
       false
     end
 
-    def install bin
+    def install(src, destprefix)
       gem_home = ENV['GEM_HOME']
       home = ENV['HOME']
-      bindir = "#{home}/.local/bin"
+      basedir = "#{home}/.local/"
       if gem_home.nil?
-        FileUtils.mkdir_p "#{home}/.local/bin"
-        ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local/bin"
+        FileUtils.mkdir_p File.join(basedir, 'bin')
+        FileUtils.mkdir_p File.join(basedir, 'lib')
+        ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local"
       else
-        bindir = File.join(ENV['GEM_HOME'], 'bin')
+        basedir = ENV['GEM_HOME']
       end
-      install_location = File.join(bindir, File.basename(bin))
-      FileUtils.install(bin, install_location, :mode => 0775)
+      destprefix = 'bin' if destprefix == '.'
+      install_location = File.join(basedir, destprefix, File.basename(src))
+      FileUtils.install(src, install_location, :mode => 0775)
     end
 
   end

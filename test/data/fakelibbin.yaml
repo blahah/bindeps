@@ -1,0 +1,18 @@
+fakelibbin:
+  binaries:
+    - fakelibbin
+  libraries:
+    - fakelib
+  version:
+    number: success
+    command: fakelibbin
+  url:
+    64bit:
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakelibbin.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakelibbin.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakelibbin.tgz
+    32bit:
+      macosx: https://github.com/Blahah/bindeps/raw/master/test/data/fakelibbin.tgz
+      linux: https://github.com/Blahah/bindeps/raw/master/test/data/fakelibbin.tgz
+      unix: https://github.com/Blahah/bindeps/raw/master/test/data/fakelibbin.tgz
+  unpack: true

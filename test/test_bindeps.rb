@@ -20,7 +20,10 @@ class TestBindeps < Test::Unit::TestCase
       `rm #{bindir}/fakebin2` if File.exist?("#{bindir}/fakebin2")
       `rm #{bindir}/fakebin3` if File.exist?("#{bindir}/fakebin3")
       `rm #{bindir}/fakebin4` if File.exist?("#{bindir}/fakebin4")
-      `rm -rf #{ENV['HOME']}/.local/bin` if Dir.exist?("#{ENV['HOME']}/.local/bin")
+      `rm #{bindir}/fakelibbin` if File.exist?("#{bindir}/fakelibbin")
+      if Dir.exist? "#{ENV['HOME']}/.local/bin"
+        `rm -rf #{ENV['HOME']}/.local/bin`
+      end
     end
 
     should "identify and install missing dependencies" do
@@ -146,7 +149,7 @@ class TestBindeps < Test::Unit::TestCase
                                     config['version'],
                                     config['url'],
                                     config['unpack'])
-        assert d.installed?('fakebin4'), "fakebin4 installed"
+        assert d.installed?('fakebin4'), "fakebin4 not installed"
       end
     end
 
@@ -161,6 +164,21 @@ class TestBindeps < Test::Unit::TestCase
       Bindeps.require test_yaml
       msg = "this is a non-matching line\nfakebin v2.0.1\nmore non-matching stuff"
       assert_equal msg, `fakebin2`.strip
+    end
+
+    should "handle lib dependencies" do
+      test_yaml = File.join(@data_dir, 'fakelibbin.yaml')
+      Bindeps.require test_yaml
+      deps = YAML.load_file test_yaml
+      deps.each_pair do |name, config|
+        d = Bindeps::Dependency.new(name,
+        config['binaries'],
+        config['version'],
+        config['url'],
+        config['unpack'],
+        config['libraries'])
+        assert d.installed?('fakelibbin'), "fakelibbin not installed"
+      end
     end
 
   end
