@@ -3,6 +3,7 @@ require "unpacker"
 require "fixwhich"
 require "tmpdir"
 require "yaml"
+require "fileutils"
 
 module Bindeps
 
@@ -166,12 +167,7 @@ module Bindeps
       home = ENV['HOME']
       bindir = "#{home}/.local/bin"
       if gem_home.nil?
-        if !Dir.exist?("#{home}/.local")
-          Dir.mkdir("#{home}/.local")
-        end
-        if !Dir.exist?("#{home}/.local/bin")
-          Dir.mkdir("#{home}/.local/bin")
-        end
+        FileUtils.mkdir_p "#{home}/.local/bin"
         ENV['PATH'] = ENV['PATH'] + ":#{ENV['HOME']}/.local/bin"
       else
         bindir = File.join(ENV['GEM_HOME'], 'bin')
