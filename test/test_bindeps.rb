@@ -10,20 +10,19 @@ class TestBindeps < Test::Unit::TestCase
     end
 
     teardown do
-      # delete fake binaries from
+      # delete fake binaries
       if ENV['GEM_HOME'].nil?
         bindir = "#{ENV['HOME']}/.local/bin"
       else
         bindir = File.join(ENV['GEM_HOME'], 'bin')
       end
-      `rm #{bindir}/fakebin` if File.exist?("#{bindir}/fakebin")
-      `rm #{bindir}/fakebin2` if File.exist?("#{bindir}/fakebin2")
-      `rm #{bindir}/fakebin3` if File.exist?("#{bindir}/fakebin3")
-      `rm #{bindir}/fakebin4` if File.exist?("#{bindir}/fakebin4")
-      `rm #{bindir}/fakelibbin` if File.exist?("#{bindir}/fakelibbin")
-      if Dir.exist? "#{ENV['HOME']}/.local/bin"
-        `rm -rf #{ENV['HOME']}/.local/bin`
+      %w[fakebin fakebin2 fakebin3 fakebin4 fakelibbin].each do |bin|
+        path = File.join(bindir, bin)
+        FileUtils.rm(path) if File.exist?(path)
       end
+      # delete fake lib
+      libpath = File.expand_path File.join(bindir, '../lib/fakelib')
+      FileUtils.rm(libpath) if File.exist?(libpath)
     end
 
     should "identify and install missing dependencies" do
