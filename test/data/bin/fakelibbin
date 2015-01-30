@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+# Figure out where this script is located.
+SELFDIR="`dirname \"$0\"`"
+SELFDIR="`cd \"$SELFDIR\" && pwd`"
+
+# Use the lib
+cat "$SELFDIR/../lib/fakelib"
