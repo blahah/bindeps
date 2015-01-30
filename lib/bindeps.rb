@@ -88,11 +88,13 @@ module Bindeps
           return sys[os]
         else
           raise UnsupportedSystemError,
-                "bindeps config for #{@name} #{arch} doesn't contain an entry for #{os}"
+                "bindeps config for #{@name} #{arch} doesn't " +
+                "contain an entry for #{os}"
         end
       else
         raise UnsupportedSystemError,
-              "bindeps config for #{@name} doesn't contain an entry for #{arch}"
+              "bindeps config for #{@name} doesn't contain an " +
+              "entry for #{arch}"
       end
     end
 
