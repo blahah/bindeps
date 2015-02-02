@@ -134,6 +134,7 @@ module Bindeps
               file = File.basename(extracted)
               if @binaries.include?(file) || @libraries.include?(file)
                 dir = File.dirname extracted
+                dir = %w[bin lib].include?(dir) ? dir : '.'
                 install(extracted, dir) unless File.directory?(extracted)
               end
             end
