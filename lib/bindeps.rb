@@ -133,7 +133,7 @@ module Bindeps
             Dir['**/*'].each do |extracted|
               file = File.basename(extracted)
               if @binaries.include?(file) || @libraries.include?(file)
-                dir = File.dirname extracted
+                dir = File.dirname(extracted).split(File::PATH_SEPARATOR).last
                 dir = %w[bin lib].include?(dir) ? dir : '.'
                 install(extracted, dir) unless File.directory?(extracted)
               end
