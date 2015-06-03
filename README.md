@@ -15,26 +15,6 @@ Simple binary dependency management for Ruby gems
 $ gem install bindeps
 ```
 
-### Using Bundler
-
-Add this line to your application's Gemfile:
-
-```
-gem 'bindeps'
-```
-
-And then execute:
-
-```bash
-$ bundle
-```
-
-Or install it yourself as:
-
-```bash
-$ gem install bindeps
-```
-
 ## Usage
 
 Create a YAML file describing your dependencies as a dictionary. Read the [bindeps YAML format specifications](wiki/bindeps_YAML_format_specifications).
@@ -70,6 +50,15 @@ Bindeps.require 'binary_dependencies.yaml'
 ```
 
 `bindeps` will check run the `version:command` for each dependency. If the return value of the command doesn't match a regular expression test against the `version:number` field, `bindeps` will download the file that matches your system architecture, unpack it unless `unpack` is set to false, and place the binary in your path. Specifically, it is added to the `bin` directory of your RubyGems installation. This means the binary will be in the PATH as long as this version of RubyGems is in use (which is ideal for gem dependencies). If the return value does match, `bindeps` will do nothing.
+
+### Specifying an install directory
+
+Simply pass the destination directory as the second argument to `Bindeps::require()`:
+
+```ruby
+Bindeps.require('deps.yaml', '/some/install/directory')
+
+```
 
 ## Contributing
 

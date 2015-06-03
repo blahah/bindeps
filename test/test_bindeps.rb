@@ -165,6 +165,16 @@ class TestBindeps < Test::Unit::TestCase
       assert_equal msg, `fakebin2`.strip
     end
 
+    should "install to a custom directory if specified" do
+      Dir.mktmpdir do |dir|
+        test_yaml = File.join(@data_dir, 'fakebin.yaml')
+        Bindeps.require(test_yaml, dir)
+        bindest = File.join(dir, 'bin', 'fakebin')
+        assert File.exist?(bindest)
+        assert_equal `#{bindest}`.chomp, 'success'
+      end
+    end
+
     should "handle lib dependencies" do
       test_yaml = File.join(@data_dir, 'fakelibbin.yaml')
       Bindeps.require test_yaml

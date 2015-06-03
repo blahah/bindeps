@@ -10,7 +10,7 @@ module Bindeps
   class DownloadFailedError < StandardError; end
   class UnsupportedSystemError < StandardError; end
 
-  def self.require dependencies
+  def self.require(dependencies, destdir = '')
     if dependencies.is_a? String
       dependencies = YAML.load_file dependencies
     end
@@ -25,7 +25,7 @@ module Bindeps
                              config['url'],
                              unpack,
                              libraries)
-          d.install_missing
+          d.install_missing destdir
         end
       end
     end
@@ -77,11 +77,11 @@ module Bindeps
       @unpack = unpack
     end
 
-    def install_missing
+    def install_missing destdir=''
       unless all_installed?
         puts "Installing #{@name} (#{@version})..."
         download
-        unpack
+        unpack destdir
       end
     end
 
@@ -124,7 +124,7 @@ module Bindeps
       end
     end
 
-    def unpack
+    def unpack destdir = ''
       archive = File.basename(@url)
       Unpacker.archive? archive
       if @unpack
@@ -135,13 +135,15 @@ module Bindeps
               if @binaries.include?(file) || @libraries.include?(file)
                 dir = File.dirname(extracted).split(File::PATH_SEPARATOR).last
                 dir = %w[bin lib].include?(dir) ? dir : '.'
-                install(extracted, dir) unless File.directory?(extracted)
+                unless File.directory?(extracted)
+                  install(extracted, dir, destdir)
+                end
               end
             end
           end
         end
       else
-        install(@binaries.first, 'bin')
+        install(@binaries.first, 'bin', destdir)
       end
     end
 
@@ -173,11 +175,13 @@ module Bindeps
       false
     end
 
-    def install(src, destprefix)
+    def install(src, destprefix, destdir = '')
       gem_home = ENV['GEM_HOME']
       home = ENV['HOME']
       basedir = File.join(home, '.local')
-      if gem_home.nil?
+      if destdir.length > 0
+        basedir = destdir
+      elsif gem_home.nil?
         ENV['PATH'] = ENV['PATH'] + ":#{File.join(basedir, 'bin')}"
       else
         basedir = ENV['GEM_HOME']
