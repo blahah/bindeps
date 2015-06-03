@@ -17,7 +17,7 @@ $ gem install bindeps
 
 ## Usage
 
-Create a YAML file describing your dependencies as a dictionary. Read the [bindeps YAML format specifications](wiki/bindeps_YAML_format_specifications).
+Create a YAML file describing your dependencies as a dictionary. Read the [bindeps YAML format specifications](https://github.com/Blahah/bindeps/wiki/bindeps_YAML_format_specifications).
 
 ```yaml
 bowtie2:
