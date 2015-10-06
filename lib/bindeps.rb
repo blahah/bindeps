@@ -126,8 +126,8 @@ module Bindeps
 
     def unpack destdir = ''
       archive = File.basename(@url)
-      Unpacker.archive? archive
       if @unpack
+        Unpacker.archive? archive
         Unpacker.unpack(archive) do |dir|
           Dir.chdir dir do
             Dir['**/*'].each do |extracted|
