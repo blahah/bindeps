@@ -126,8 +126,8 @@ module Bindeps
 
     def unpack destdir = ''
       archive = File.basename(@url)
-      Unpacker.archive? archive
       if @unpack
+        Unpacker.archive? archive
         Unpacker.unpack(archive) do |dir|
           Dir.chdir dir do
             Dir['**/*'].each do |extracted|
@@ -136,14 +136,15 @@ module Bindeps
                 dir = File.dirname(extracted).split(File::PATH_SEPARATOR).last
                 dir = %w[bin lib].include?(dir) ? dir : '.'
                 unless File.directory?(extracted)
-                  install(extracted, dir, destdir)
+                  install(extracted, extracted, dir, destdir)
                 end
               end
             end
           end
         end
       else
-        install(@binaries.first, 'bin', destdir)
+        bin = File.basename(@url)
+        install(bin, @binaries.first, 'bin', destdir)
       end
     end
 
@@ -175,7 +176,7 @@ module Bindeps
       false
     end
 
-    def install(src, destprefix, destdir = '')
+    def install(src, dest, destprefix, destdir = '')
       gem_home = ENV['GEM_HOME']
       home = ENV['HOME']
       basedir = File.join(home, '.local')
@@ -189,7 +190,7 @@ module Bindeps
       FileUtils.mkdir_p File.join(basedir, 'bin')
       FileUtils.mkdir_p File.join(basedir, 'lib')
       destprefix = 'bin' if destprefix == '.'
-      install_location = File.join(basedir, destprefix, File.basename(src))
+      install_location = File.join(basedir, destprefix, File.basename(dest))
       FileUtils.install(src, install_location, :mode => 0775)
     end
 
