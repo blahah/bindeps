@@ -11,6 +11,7 @@ module Bindeps
   class UnsupportedSystemError < StandardError; end
 
   def self.require(dependencies, destdir = '')
+    destdir = File.expand_path destdir unless destdir.empty?
     if dependencies.is_a? String
       dependencies = YAML.load_file dependencies
     end
@@ -78,6 +79,7 @@ module Bindeps
     end
 
     def install_missing destdir=''
+      destdir = File.expand_path destdir unless destdir.empty?
       unless all_installed?
         puts "Installing #{@name} (#{@version})..."
         download
@@ -125,6 +127,7 @@ module Bindeps
     end
 
     def unpack destdir = ''
+      destdir = File.expand_path destdir unless destdir.empty?
       archive = File.basename(@url)
       if @unpack
         Unpacker.archive? archive
